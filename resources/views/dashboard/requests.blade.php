@@ -26,7 +26,9 @@
                 </td>
                 <td>
                     <!-- Button to go to the medicine store page -->
-                    <a href="{{ route('medicines.storePage', ['user_id' => Auth::id()]) }}" class="btn btn-primary">Go to Store</a>
+                    <a href="{{ route('medicines.storePage', ['user_id' => $prescription->user_id]) }}" class="btn btn-primary mt-2">Go to Med Store</a>
+
+
                 </td>
             </tr>
             @endforeach

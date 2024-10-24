@@ -9,7 +9,9 @@
             <thead>
                 <tr>
                     <th scope="col">Medicine</th>
-                    <th scope="col">Price</th>
+                    <th scope="col">Original Price</th>
+                    <th scope="col">Discount</th>
+                    <th scope="col">Discounted Price</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Total</th>
                     <th scope="col">Action</th>
@@ -19,6 +21,12 @@
                 @foreach($cartItems as $id => $item)
                     <tr>
                         <td>{{ $item['name'] }}</td>
+                        <td>
+                            ${{ isset($item['original_price']) ? number_format($item['original_price'], 2) : number_format($item['price'], 2) }}
+                        </td>
+                        <td>
+                            {{ isset($item['discount']) ? $item['discount'] . '%' : '0%' }}
+                        </td>
                         <td>${{ number_format($item['price'], 2) }}</td>
                         <td>{{ $item['quantity'] }}</td>
                         <td>${{ number_format($item['price'] * $item['quantity'], 2) }}</td>
@@ -33,7 +41,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                    <td colspan="5" class="text-right"><strong>Total:</strong></td>
                     <td><strong>${{ number_format($totalPrice, 2) }}</strong></td>
                     <td></td>
                 </tr>
@@ -52,7 +60,8 @@
     @else
         <p class="text-center">Your cart is empty.</p>
     @endif
-
 </div>
 @endsection
+
+
 

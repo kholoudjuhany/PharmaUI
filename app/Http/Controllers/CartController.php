@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Med;
+use App\Models\User;
+use App\Models\HIC;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -21,27 +23,45 @@ class CartController extends Controller
     }
 
     // Add a medicine to the cart
-    public function addToCart($id)
+    public function addToCart(Request $request, $id)
     {
         $medicine = Med::findOrFail($id);
-        $cart = session()->get('cart', []);
+    $cart = session()->get('cart', []);
+    
+    // Assuming the user is authenticated
+    $user = auth()->user();
+    $insuranceCompany = $user->hic; // Get the user's health insurance company
+    
+    // Store the original price
+    $originalPrice = $medicine->med_price;
+    
+    // Apply discount if there's an insurance company
+    $discount = 0; // Default discount is 0%
+    $price = $originalPrice;
+    
+    if ($insuranceCompany) {
+        $discount = $insuranceCompany->HIC_disscount; // E.g., 10% discount
+        $price -= ($price * ($discount)); // Apply the discount
+    }
 
-        // If the medicine is already in the cart, increment the quantity
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-        } else {
-            // If not, add the medicine to the cart
-            $cart[$id] = [
-                'name' => $medicine->med_name,
-                'price' => $medicine->med_price,
-                'quantity' => 1,
-            ];
-        }
+    // If the medicine is already in the cart, increment the quantity
+    if (isset($cart[$id])) {
+        $cart[$id]['quantity']++;
+    } else {
+        // If not, add the medicine to the cart
+        $cart[$id] = [
+            'name' => $medicine->med_name,
+            'original_price' => $originalPrice,
+            'price' => $price,
+            'discount' => $discount, // Save the discount percentage
+            'quantity' => 1,
+        ];
+    }
 
-        session()->put('cart', $cart);
+    // Save the updated cart to the session
+    session()->put('cart', $cart);
 
-        // Redirect back to the medicines store page
-        return redirect()->route('medicines.storePage')->with('success', 'Medicine added to cart!');
+    return redirect()->back()->with('success', 'Medicine added to cart!');
     }
 
     // Remove a specific medicine from the cart
