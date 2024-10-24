@@ -3,22 +3,32 @@
 @section('content')
 <div class="container">
     <h1 class="text-center">Medicines Store</h1>
-    
+
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Button to view the cart -->
+    <div class="text-right mb-4">
+        <a href="{{ route('cart.show') }}" class="btn btn-info">View Cart</a>
+    </div>
+
     <!-- Display categories as buttons or a dropdown -->
     <div class="row mb-4">
         <form method="GET" action="{{ route('medicines.storePage') }}">
-    <div class="form-group">
-        <select name="category_id" class="form-control" onchange="this.form.submit()">
-            <option value="">All Categories</option>
-            @foreach($categories as $category)
-                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                    {{ $category->cat_name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-</form>
-
+            <div class="form-group">
+                <select name="category_id" class="form-control" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                            {{ $category->cat_name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </form>
     </div>
 
     <!-- Display medicines in cards -->

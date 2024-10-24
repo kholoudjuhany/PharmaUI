@@ -5,9 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\HIC;
+use App\Models\Prescription;
 
 class UserController extends Controller
 {
+
+    public function showMainPage()
+{
+    // Get the current user's latest prescription (if any)
+    $prescription = Prescription::where('user_id', auth()->id())
+                                ->latest()
+                                ->first();
+
+    return view('landing.pages.main', compact('prescription'));
+}
     
     public function index()
 {

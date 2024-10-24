@@ -1,4 +1,4 @@
-@extends('layouts.dashApp') <!-- Adjust as per your layout file -->
+@extends('layouts.dashApp')
 
 @section('content')
 <div class="container">
@@ -14,12 +14,19 @@
         <tbody>
             @foreach($pendingPrescriptions as $prescription)
             <tr>
-                <td>{{ $prescription->user ? $prescription->user->Fname . ' ' . $prescription->user->Lname : 'No Users'}}</td> <!-- Assuming user relationship is defined in Prescription model -->
+                <td>{{ $prescription->user ? $prescription->user->Fname . ' ' . $prescription->user->Lname : 'No Users'}}</td>
                 <td>
-                    <img src="{{ asset('storage/' . $prescription->pre_details) }}" alt="Prescription" width="100" height="100" />
+                    @if ($prescription->pre_details)
+                        <a href="{{ asset('storage/' . $prescription->pre_details) }}" target="_blank">
+                            <img src="{{ asset('storage/' . $prescription->pre_details) }}" alt="Prescription" width="150" height="150" />
+                        </a>
+                    @else
+                        <p>No Image Available</p>
+                    @endif
                 </td>
                 <td>
-                    <a href="{{ route('medicines.store', ['user_id' => $prescription->user_id]) }}" class="btn" style="background-color: lightgreen; color: black;">Go to Store</a>
+                    <!-- Button to go to the medicine store page -->
+                    <a href="{{ route('medicines.storePage', ['user_id' => Auth::id()]) }}" class="btn btn-primary">Go to Store</a>
                 </td>
             </tr>
             @endforeach
@@ -27,4 +34,8 @@
     </table>
 </div>
 @endsection
+
+
+
+
 

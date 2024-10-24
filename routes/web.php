@@ -26,9 +26,9 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/main', function () {
-    return view('landing.pages.main'); 
-})->name('main');
+
+Route::get('/main', [UserController::class, 'showMainPage'])->name('main');
+
 
 Route::resource('users', UserController::class);
 
@@ -55,3 +55,6 @@ Route::get('/requests', [PrescriptionController::class, 'requests'])->name('requ
 Route::get('/dashboard', function () {
     return view('dashWelcome');
 })->name('dashboard');
+
+
+Route::get('/prescriptions/{id}/bill', [PrescriptionController::class, 'showBill'])->name('prescriptions.bill');

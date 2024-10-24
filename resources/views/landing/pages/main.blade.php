@@ -1,19 +1,30 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 
-@section('content') 
+@section('content')
 <div class="site-section">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <h2 class="h3 mb-5 text-black">Welcome to the Main Page</h2>
-                <p class="mb-4">Please add your prescription</p>
             </div>
         </div>
 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if(isset($prescription))  <!-- Check if prescription exists -->
+            @if($prescription->status === 'completed')
+                <p class="mb-4">Your request has been processed. Please review your bill below.</p>
+                <a href="{{ route('prescriptions.bill', $prescription->id) }}" class="btn btn-primary">View Bill</a>
+            @elseif($prescription->status === 'pending')
+                <p class="mb-4">Your request is sent! Just wait 10-20 minutes.</p>
+                <!-- Optionally, you could add an HTML element to display a spinner or loading animation -->
+            @else
+                <p class="mb-4">Your prescription is currently in {{ $prescription->status }} state.</p>
+            @endif
         @else
-            
+            <!-- Show form if no prescription and user is not logged out -->
             <div class="row">
                 <div class="col-md-12">
                     <h3 class="mb-4">Please add your prescription</h3>
@@ -27,8 +38,10 @@
                     </form>
                 </div>
             </div>
-            
         @endif
     </div>
 </div>
-@endsection 
+@endsection
+
+
+

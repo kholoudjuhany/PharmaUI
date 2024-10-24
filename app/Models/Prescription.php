@@ -12,7 +12,9 @@ class Prescription extends Model
     protected $fillable = [
         'status',
         'pre_details',
-        'user_id', // Add this field to fillable
+        'user_id',
+        'doctor_response',
+        'bill',
         'submited_at'
     ];
 

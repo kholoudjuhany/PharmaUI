@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-
     // Show the cart page
     public function showCart()
     {
@@ -25,7 +24,6 @@ class CartController extends Controller
     public function addToCart($id)
     {
         $medicine = Med::findOrFail($id);
-
         $cart = session()->get('cart', []);
 
         // If the medicine is already in the cart, increment the quantity
@@ -42,7 +40,8 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
-        return redirect()->route('cart.show')->with('success', 'Medicine added to cart!');
+        // Redirect back to the medicines store page
+        return redirect()->route('medicines.storePage')->with('success', 'Medicine added to cart!');
     }
 
     // Remove a specific medicine from the cart
