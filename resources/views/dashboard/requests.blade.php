@@ -25,10 +25,11 @@
                     @endif
                 </td>
                 <td>
-                    <!-- Button to go to the medicine store page -->
-                    <a href="{{ route('medicines.storePage', ['user_id' => $prescription->user_id]) }}" class="btn btn-primary mt-2">Go to Med Store</a>
-
-
+                    <!-- Form to trigger the switchRequest method -->
+                    <form action="{{ route('switchRequest', ['newRequestId' => $prescription->id]) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-primary mt-2">Go to Med Store</button>
+                    </form>
                 </td>
             </tr>
             @endforeach

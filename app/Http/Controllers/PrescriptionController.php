@@ -117,7 +117,12 @@ class PrescriptionController extends Controller
             // Save changes
             $prescription->save();
     
-            return redirect()->route('prescriptions.index')->with('success', 'Prescription updated successfully!');
+            // Check if the status is 'cancelled', redirect user to main page
+            if ($request->status === 'cancelled') {
+                return redirect()->route('prescriptions.index');
+            }
+    
+            return redirect()->route('prescriptions.index');
         } else {
             return redirect()->back()->with('error', 'Prescription not found.');
         }

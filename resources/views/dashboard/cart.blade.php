@@ -51,7 +51,7 @@
         <!-- Proceed to checkout or empty the cart -->
         <div class="text-center mt-4">
             <a href="/medicines.storePage" class="btn btn-primary">Back to Store</a>
-            <a href="{{ route('checkout') }}" class="btn btn-success">Proceed to Checkout</a>
+            <a href="{{ route('checkout') }}" class="btn btn-success">Send to The Customer</a>
             <form method="POST" action="{{ route('cart.clear') }}" style="display: inline;">
                 @csrf
                 <button type="submit" class="btn btn-danger">Clear Cart</button>

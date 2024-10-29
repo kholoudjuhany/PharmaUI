@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Med;
 use App\Models\User;
 use App\Models\HIC;
+use App\Models\Prescription;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -24,36 +25,35 @@ class CartController extends Controller
 
     // Add a medicine to the cart
     public function addToCart(Request $request, $id)
-    {
-        $medicine = Med::findOrFail($id);
+{
+    $medicine = Med::findOrFail($id);
     $cart = session()->get('cart', []);
+
+    // Retrieve the user_id from the session
+    $userId = session()->get('active_user_id');
+    $user = User::find($userId);  // Fetch user based on active user ID
+
+    // Check if the user has a health insurance company
+    $insuranceCompany = $user->hic;
     
-    // Assuming the user is authenticated
-    $user = auth()->user();
-    $insuranceCompany = $user->hic; // Get the user's health insurance company
-    
-    // Store the original price
-    $originalPrice = $medicine->med_price;
-    
-    // Apply discount if there's an insurance company
-    $discount = 0; // Default discount is 0%
-    $price = $originalPrice;
+    // Calculate price after applying the discount
+    $price = $medicine->med_price;
+    $discount = 0; // Default no discount
     
     if ($insuranceCompany) {
         $discount = $insuranceCompany->HIC_disscount; // E.g., 10% discount
         $price -= ($price * ($discount)); // Apply the discount
     }
 
-    // If the medicine is already in the cart, increment the quantity
+    // Store the discount and original price in the session
     if (isset($cart[$id])) {
         $cart[$id]['quantity']++;
     } else {
-        // If not, add the medicine to the cart
         $cart[$id] = [
             'name' => $medicine->med_name,
-            'original_price' => $originalPrice,
+            'original_price' => $medicine->med_price,
+            'discount' => $discount,
             'price' => $price,
-            'discount' => $discount, // Save the discount percentage
             'quantity' => 1,
         ];
     }
@@ -62,7 +62,7 @@ class CartController extends Controller
     session()->put('cart', $cart);
 
     return redirect()->back()->with('success', 'Medicine added to cart!');
-    }
+}
 
     // Remove a specific medicine from the cart
     public function removeFromCart($id)
@@ -92,5 +92,21 @@ class CartController extends Controller
         session()->forget('cart');
 
         return redirect()->route('cart.show')->with('success', 'Checkout complete!');
+    }
+
+    public function switchRequest($newRequestId)
+    {
+        session()->forget('cart');          // Clears the cart items
+        session()->forget('discount');      // Clears any discount information
+        session()->forget('appliedDiscount'); // If you store the applied discount separately
+
+        // Fetch the new request (assuming the model is 'Prescription')
+        $newRequest = Prescription::findOrFail($newRequestId);
+
+        // Optionally, set the user or prescription in the session if needed
+        session()->put('activePrescription', $newRequest->id);
+    
+        // Redirect to the medicine store or cart page to start a new session
+        return redirect()->route('medicines.storePage', ['user_id' => $newRequest->user_id]);
     }
 }

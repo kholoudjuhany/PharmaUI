@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Med;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Category;
 
@@ -11,17 +12,14 @@ class MedController extends Controller
 
     public function storePage(Request $request)
     {
-        $categories = Category::all(); // Fetch all categories
+        $userId = $request->input('user_id');
+        session()->put('active_user_id', $userId);
 
-        // If a category is selected, filter medicines, else fetch all
-        $query = Med::query();
+        // Retrieve all medicines and categories
+        $medicines = Med::all();
+        $categories = Category::all(); // Make sure to replace 'Category' with your actual model name for categories
 
-        if ($request->has('category_id')) {
-            $query->where('cat_id', $request->category_id);
-        }
-
-        $medicines = $query->get();
-
+        // Pass both medicines and categories to the view
         return view('dashboard.medicines_store', compact('medicines', 'categories'));
     }
 

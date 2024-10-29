@@ -46,6 +46,8 @@ Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.
 Route::post('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove'); // Remove a specific item from the cart
 Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear'); // Clear all items from the cart
 Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout'); // Proceed to checkout
+Route::post('/switch-request/{newRequestId}', [CartController::class, 'switchRequest'])->name('switchRequest');
+
 
 
 Route::resource('prescriptions', PrescriptionController::class);
